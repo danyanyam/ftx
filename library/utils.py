@@ -8,10 +8,10 @@ from typing import Any, Dict
 API = 'https://ftx.com'
 
 
-async def _get(url: str, is_auth: bool = False, api_key: str = '', secret_key: str = '') -> Dict:
+async def _get(url: str, is_auth: bool = False, api_key: str = '', secret_key: str = '', subaccount_name: str = '') -> Dict:
     """ basic get request, using async """
 
-    headers = build_header(method='GET', endpoint=url, api_key=api_key, secret_key=secret_key) if is_auth else None
+    headers = build_header(method='GET', endpoint=url, api_key=api_key, secret_key=secret_key, subaccount_name=subaccount_name) if is_auth else None
     async with aiohttp.ClientSession() as request:
         async with request.get(API + url, headers=headers) as response:
             return await response.json()

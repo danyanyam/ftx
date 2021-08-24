@@ -1,16 +1,14 @@
-from typing import Any, Dict
-from library.utils import _get, _post
+from library.ftx.base import ApiObject
 
 # TODO: delete saved address
 # TODO: get saved address by param
 
 
-class Wallet:
+class Wallet(ApiObject):
     """https://docs.ftx.com/#account"""
 
-    def __init__(self, api: str, secret: str):
-        self.api_key = api
-        self.secret_key = secret
+    def __init__(self, api_key: str, secret_key: str, subaccount_name: str = ''):
+        super().__init__(api_key, secret_key, subaccount_name)
 
     async def get_coins(self):
         """ https://docs.ftx.com/#get-coins """
@@ -110,11 +108,3 @@ class Wallet:
             Dict[str, Any]: [description]
         """
         return await self.post('/wallet/saved_addresses', data={'coin': coin, 'addressName': addressName, 'address': address, 'isPrimeTrust': isPrimeTrust, 'tag': tag})
-
-    async def get(self, endpoint: str, authentication_required: bool = True):
-        """ Basic get request """
-        return await _get(endpoint, is_auth=authentication_required, api_key=self.api_key, secret_key=self.secret_key)
-
-    async def post(self, endpoint: str, data: Dict[str, str], authentication_required: bool = True):
-        """ Basic post request """
-        return await _post(endpoint, data=data, is_auth=authentication_required, api_key=self.api_key, secret_key=self.secret_key)
