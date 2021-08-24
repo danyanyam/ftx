@@ -1,5 +1,5 @@
 from typing import Any, Dict
-from library.utils import get, post
+from library.utils import _get, _post
 
 
 class Account:
@@ -9,15 +9,11 @@ class Account:
         self.api_key = api
         self.secret_key = secret
 
+    async def get(self, endpoint: str, authentication_requires: bool = True) -> Dict[str, Any]:
+        return await _get(endpoint, is_auth=authentication_requires, api_key=self.api_key, secret_key=self.secret_key)
+
     async def get_account_information(self) -> Dict[str, Any]:
-        endpoint = '/api/account'
-        return await get(endpoint, authentication_required=True, api_key=self.api_key, secret_key=self.secret_key)
+        return await self.get('/api/account')
 
     async def get_positions(self) -> Dict[str, Any]:
-        endpoint = '/api/positions'
-        return await get(endpoint, authentication_required=True, api_key=self.api_key, secret_key=self.secret_key)
-
-    async def change_account_leverage(self, leverage) -> Dict[str, Any]:
-        endpoint = '/account/leverage'
-        assert leverage < 10
-        return await post(endpoint, authentication_required=True, api_key=self.api_key, secret_key=self.secret_key, data={'leverage': leverage})
+        return await self.get('/api/positions')
