@@ -8,19 +8,19 @@ from typing import Any, Dict
 API = 'https://ftx.com'
 
 
-async def get(url: str, authenticated: bool = False, api_key: str = '', secret_key: str = '') -> Dict:
+async def get(url: str, authentication_required: bool = False, api_key: str = '', secret_key: str = '') -> Dict:
     """ basic get request, using async """
 
-    headers = build_header(method='GET', endpoint=url, api_key=api_key, secret_key=secret_key) if authenticated else None
+    headers = build_header(method='GET', endpoint=url, api_key=api_key, secret_key=secret_key) if authentication_required else None
     async with aiohttp.ClientSession() as request:
         async with request.get(API + url, headers=headers) as response:
             return await response.json()
 
 
-async def post(url: str, data: Dict[str, Any], headers: Dict[str, str] = None,  authenticated: bool = False, api_key: str = '', secret_key: str = '') -> Dict:
+async def post(url: str, data: Dict[str, Any], headers: Dict[str, str] = None,  authentication_required: bool = False, api_key: str = '', secret_key: str = '') -> Dict:
     """ basic post request, using async """
 
-    headers = build_header(method='POST', endpoint=url, api_key=api_key, secret_key=secret_key, data=data) if authenticated else None
+    headers = build_header(method='POST', endpoint=url, api_key=api_key, secret_key=secret_key, data=data) if authentication_required else None
     async with aiohttp.ClientSession(headers=headers) as request:
         async with request.post(API + url, data=data) as response:
             return await response.json()
