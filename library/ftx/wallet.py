@@ -12,42 +12,15 @@ class Wallet:
         self.api_key = api
         self.secret_key = secret
 
-    async def get(self, endpoint: str, authentication_required: bool = True) -> Dict[str, Any]:
-        """
-        Basic get request
-
-        Args:
-            endpoint (str): ["/api/account"] url
-            authentication_required (bool, optional): [True]. Whether is auth required.
-
-        Returns:
-            Dict[str, Any]: server response
-        """
-        return await _get(endpoint, is_auth=authentication_required, api_key=self.api_key, secret_key=self.secret_key)
-
-    async def post(self, endpoint: str, data: Dict[str, str], authentication_required: bool = True) -> Dict[str, Any]:
-        """
-        Basic post request
-
-        Args:
-            endpoint (str): ["/api/account"] url
-            data (dict): {key: value} data to be sent
-            authentication_required (bool, optional): [True]. Whether is auth required.
-
-        Returns:
-            Dict[str, Any]: server response
-        """
-        return await _post(endpoint, data=data, is_auth=authentication_required, api_key=self.api_key, secret_key=self.secret_key)
-
-    async def get_coins(self) -> Dict[str, Any]:
+    async def get_coins(self):
         """ https://docs.ftx.com/#get-coins """
         return await self.get('/wallet/coins')
 
-    async def get_balances(self) -> Dict[str, Any]:
+    async def get_balances(self):
         """ https://docs.ftx.com/#get-balances """
         return await self.get('/wallet/balances')
 
-    async def get_balances_of_all_accounts(self) -> Dict[str, Any]:
+    async def get_balances_of_all_accounts(self):
         """
         https://docs.ftx.com/#get-balances-of-all-accounts
 
@@ -56,7 +29,7 @@ class Wallet:
         """
         return await self.get('/wallet/all_balances')
 
-    async def get_deposit_address(self, coin: str, method: str) -> Dict[str, Any]:
+    async def get_deposit_address(self, coin: str, method: str):
         """
         https://docs.ftx.com/#get-deposit-address
 
@@ -76,7 +49,7 @@ class Wallet:
         """ https://docs.ftx.com/#get-withdrawal-history """
         return await self.get('/wallet/withdrawals')
 
-    async def request_withdrawal(self, coin: str, size: float, address: str, tag: str = None, method: str = None, password: str = None, code: str = None) -> Dict[str, Any]:
+    async def request_withdrawal(self, coin: str, size: float, address: str, tag: str = None, method: str = None, password: str = None, code: str = None):
         """
         https://docs.ftx.com/#request-withdrawal
 
@@ -95,12 +68,12 @@ class Wallet:
         """
         return await self.post('/wallet/withdrawals', data={'coin': coin, 'size': size, 'address': address, 'tag': tag, 'method': method, 'password': password, 'code': code})
 
-    async def get_airdrops(self) -> Dict[str, Any]:
+    async def get_airdrops(self):
         """https://docs.ftx.com/#get-airdrops
         This endpoint provides you with updates to your AMPL balances based on AMPL rebases.  """
         return await self.get('/wallet/airdrops')
 
-    async def get_withdrawal_fees(self, coin: str, size: float, address: str, tag: str = None) -> Dict[str, Any]:
+    async def get_withdrawal_fees(self, coin: str, size: float, address: str, tag: str = None):
         """
         https://docs.ftx.com/#get-withdrawal-fees
 
@@ -115,14 +88,14 @@ class Wallet:
         """
         return await self.post('/wallet/withdrawal_fee', data={'coin': coin, 'size': size, 'address': address, 'tag': tag})
 
-    async def get_saved_addresses(self, coin: str = None) -> Dict[str, Any]:
+    async def get_saved_addresses(self, coin: str = None):
         """
         https://docs.ftx.com/#get-saved-addresses
         This endpoint provides you with your saved addresses.
         """
         return await self.get('/wallet/saved_addresses')
 
-    async def create_saved_addresses(self, coin: str, address: str, addressName: str, isPrimeTrust: bool, tag: str = None) -> Dict[str, Any]:
+    async def create_saved_addresses(self, coin: str, address: str, addressName: str, isPrimeTrust: bool, tag: str = None):
         """
         https://docs.ftx.com/#create-saved-addresses
 
@@ -137,3 +110,11 @@ class Wallet:
             Dict[str, Any]: [description]
         """
         return await self.post('/wallet/saved_addresses', data={'coin': coin, 'addressName': addressName, 'address': address, 'isPrimeTrust': isPrimeTrust, 'tag': tag})
+
+    async def get(self, endpoint: str, authentication_required: bool = True):
+        """ Basic get request """
+        return await _get(endpoint, is_auth=authentication_required, api_key=self.api_key, secret_key=self.secret_key)
+
+    async def post(self, endpoint: str, data: Dict[str, str], authentication_required: bool = True):
+        """ Basic post request """
+        return await _post(endpoint, data=data, is_auth=authentication_required, api_key=self.api_key, secret_key=self.secret_key)
