@@ -1,12 +1,13 @@
-from library.utils import _get
 
 # TODO: historical index
 
 
-class Futures:
-    def __init__(self, api_key: str, secret_key: str):
-        self.api_key = api_key
-        self.secret_key = secret_key
+from library.ftx.base import ApiObject
+
+
+class Futures(ApiObject):
+    def __init__(self, api_key: str, secret_key: str, subaccount_name: str = ''):
+        super().__init__(api_key, secret_key, subaccount_name)
 
     async def list_all_futures(self):
         """ https://docs.ftx.com/#futures """
@@ -31,6 +32,3 @@ class Futures:
     async def get_expired_futures(self):
         """ https://docs.ftx.com/#get-index-weights """
         return await self.get(f'/expired_futures', authentication_requires=False)
-
-    async def get(self, endpoint: str, authentication_requires: bool = True):
-        return await _get(endpoint, is_auth=authentication_requires, api_key=self.api_key, secret_key=self.secret_key)

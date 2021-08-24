@@ -1,11 +1,11 @@
-from library.utils import _get
+from library.ftx.base import ApiObject
 
 # TODO: get historical prices
 
-class Markets:
-    def __init__(self, api_key: str, secret_key: str):
-        self.api_key = api_key
-        self.secret_key = secret_key
+
+class Markets(ApiObject):
+    def __init__(self, api_key: str, secret_key: str, subaccount_name: str = ''):
+        super().__init__(api_key, secret_key, subaccount_name)
 
     async def get_markets(self):
         """ https://docs.ftx.com/#markets """
@@ -22,6 +22,3 @@ class Markets:
     async def get_trades(self, market_name: str):
         """ https://docs.ftx.com/#get-trades """
         return await self.get(f'/markets/{market_name}/trades', authentication_requires=False)
-
-    async def get(self, endpoint: str, authentication_requires: bool = True):
-        return await _get(endpoint, is_auth=authentication_requires, api_key=self.api_key, secret_key=self.secret_key)
