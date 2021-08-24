@@ -11,13 +11,13 @@ class Account:
 
     async def get_account_information(self) -> Dict[str, Any]:
         endpoint = '/api/account'
-        return await get(endpoint, authenticated=True, api_key=self.api_key, secret_key=self.secret_key)
+        return await get(endpoint, authentication_required=True, api_key=self.api_key, secret_key=self.secret_key)
 
     async def get_positions(self) -> Dict[str, Any]:
         endpoint = '/api/positions'
-        return await get(endpoint, authenticated=True, api_key=self.api_key, secret_key=self.secret_key)
+        return await get(endpoint, authentication_required=True, api_key=self.api_key, secret_key=self.secret_key)
 
     async def change_account_leverage(self, leverage) -> Dict[str, Any]:
         endpoint = '/account/leverage'
         assert leverage < 10
-        return await post(endpoint, authenticated=True, api_key=self.api_key, secret_key=self.secret_key, data={'leverage': leverage})
+        return await post(endpoint, authentication_required=True, api_key=self.api_key, secret_key=self.secret_key, data={'leverage': leverage})
