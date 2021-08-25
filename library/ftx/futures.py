@@ -1,9 +1,9 @@
 import datetime as dt
 
-from library.ftx.base import ApiObject
+from library.ftx.base import BaseApiClass
 
 
-class Futures(ApiObject):
+class Futures(BaseApiClass):
     def __init__(self, api_key: str, secret_key: str, subaccount_name: str = ''):
         super().__init__(api_key, secret_key, subaccount_name)
 
@@ -34,4 +34,4 @@ class Futures(ApiObject):
     async def get_historical_index(self, market_name: str, resolution: int, start_time: dt.datetime, end_time: dt.datetime):
         """ https://docs.ftx.com/#get-historical-index """
         start_ts, end_ts = start_time.timestamp(), end_time.timestamp()
-        return await self.get(f'/api/indexes/{market_name}/candles?resolution={resolution}&start_time={start_ts}&end_time={end_ts}')
+        return await self.get(f'/api/indexes/{market_name}/candles?resolution={resolution}&start_time={start_ts}&end_time={end_ts}', authentication_required=False)
