@@ -1,3 +1,5 @@
+import datetime as dt
+
 from library.ftx.base import ApiObject
 
 # TODO: delete saved address
@@ -39,13 +41,13 @@ class Wallet(ApiObject):
         """
         return await self.get(f'/wallet/deposit_address/{coin}?method={method}')
 
-    async def get_deposit_history(self):
+    async def get_deposit_history(self, start_time: dt.datetime = None, end_time: dt.datetime = None):
         """ https://docs.ftx.com/#get-deposit-history """
-        return await self.get('/wallet/deposits')
+        return await self.get('/wallet/deposits', start_time=start_time, end_time=end_time)
 
-    async def get_withdrawal_history(self):
+    async def get_withdrawal_history(self, start_time: dt.datetime = None, end_time: dt.datetime = None):
         """ https://docs.ftx.com/#get-withdrawal-history """
-        return await self.get('/wallet/withdrawals')
+        return await self.get('/wallet/withdrawals', start_time=start_time, end_time=end_time)
 
     async def request_withdrawal(self, coin: str, size: float, address: str, tag: str = None, method: str = None, password: str = None, code: str = None):
         """
@@ -66,10 +68,10 @@ class Wallet(ApiObject):
         """
         return await self.post('/wallet/withdrawals', data={'coin': coin, 'size': size, 'address': address, 'tag': tag, 'method': method, 'password': password, 'code': code})
 
-    async def get_airdrops(self):
+    async def get_airdrops(self, start_time: dt.datetime = None, end_time: dt.datetime = None):
         """https://docs.ftx.com/#get-airdrops
         This endpoint provides you with updates to your AMPL balances based on AMPL rebases.  """
-        return await self.get('/wallet/airdrops')
+        return await self.get('/wallet/airdrops', start_time=start_time, end_time=end_time)
 
     async def get_withdrawal_fees(self, coin: str, size: float, address: str, tag: str = None):
         """
