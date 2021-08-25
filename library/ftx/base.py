@@ -25,11 +25,11 @@ class ApiObject:
         assert both_args_present_or_not(start_time, end_time), f'choose either both start_time & end_time, or nothing'
 
         # pagination support
-        params = {'start_time': start_time, 'end_time': end_time} if all(start_time, end_time) else {}
-        headers = await self.build_header(method='GET', endpoint=endpoint) if authentication_required else None
+        params = {'start_time': start_time, 'end_time': end_time} if all([start_time, end_time]) else {}
+        headers = await self._build_header(method='GET', endpoint=endpoint) if authentication_required else None
 
-        async with aiohttp.ClientSession(headers=headers, params=params) as request:
-            async with request.get(API + endpoint) as response:
+        async with aiohttp.ClientSession(headers=headers) as request:
+            async with request.get(API + endpoint, params=params) as response:
                 return await response.json()
 
     async def post(self, endpoint: str, data: Dict[str, str], authentication_required: bool = True, start_time: dt.datetime = None, end_time: dt.datetime = None):
@@ -37,14 +37,14 @@ class ApiObject:
         assert both_args_present_or_not(start_time, end_time), f'choose either both start_time & end_time, or nothing'
 
         # pagination support
-        params = {'start_time': start_time, 'end_time': end_time} if all(start_time, end_time) else {}
-        headers = await self.build_header(method='POST', endpoint=endpoint, data=data) if authentication_required else None
+        params = {'start_time': start_time, 'end_time': end_time} if all([start_time, end_time]) else {}
+        headers = await self._build_header(method='POST', endpoint=endpoint, data=data) if authentication_required else None
 
-        async with aiohttp.ClientSession(headers=headers, params=params) as request:
-            async with request.post(API + endpoint, data=data) as response:
+        async with aiohttp.ClientSession(headers=headers) as request:
+            async with request.post(API + endpoint, data=data, params=params) as response:
                 return await response.json()
 
-    async def build_header(self, method: str, endpoint: str, data: Dict[str, str] = None):
+    async def _build_header(self, method: str, endpoint: str, data: Dict[str, str] = None):
         """ in order to do some actions (like withdrawals) authentication is required.
         this functions builds headers, which are sento together with requests"""
 
