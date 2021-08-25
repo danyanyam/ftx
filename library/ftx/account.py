@@ -7,8 +7,10 @@ class Account(ApiObject):
         super().__init__(api_key, secret_key, subaccount_name)
 
     async def get_account_information(self):
+        """ https://docs.ftx.com/#get-account-information """
         return await self.get('/api/account')
 
     async def get_positions(self):
+        """ https://docs.ftx.com/#get-positions """
         return await self.get('/api/positions')
 
