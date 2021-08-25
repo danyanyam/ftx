@@ -14,3 +14,8 @@ class Account(ApiObject):
         """ https://docs.ftx.com/#get-positions """
         return await self.get('/api/positions')
 
+    async def change_account_leverage(self, leverage: float):
+        """ https://docs.ftx.com/#change-account-leverage """
+        assert leverage < 2
+        return await self.post('/api/account/leverage', data={'leverage': leverage})
+

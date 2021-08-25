@@ -44,6 +44,12 @@ class ApiObject:
             async with request.post(API + endpoint, data=data, params=params) as response:
                 return await response.json()
 
+    async def delete(self, endpoint: str, data: Dict[str, str], authentication_required: bool = True):
+        headers = await self._build_header(method='DELETE', endpoint=endpoint, data=data) if authentication_required else None
+        async with aiohttp.ClientSession(headers=headers) as request:
+            async with request.delete(API + endpoint, data=data) as response:
+                return await response.json()
+
     async def _build_header(self, method: str, endpoint: str, data: Dict[str, str] = None):
         """ in order to do some actions (like withdrawals) authentication is required.
         this functions builds headers, which are sento together with requests"""
