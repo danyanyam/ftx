@@ -2,9 +2,6 @@ import datetime as dt
 
 from library.ftx.base import ApiObject
 
-# TODO: delete saved address
-# TODO: get saved address by param
-
 
 class Wallet(ApiObject):
     """https://docs.ftx.com/#account"""
@@ -110,3 +107,11 @@ class Wallet(ApiObject):
             Dict[str, Any]: [description]
         """
         return await self.post('/api/wallet/saved_addresses', data={'coin': coin, 'addressName': addressName, 'address': address, 'isPrimeTrust': isPrimeTrust, 'tag': tag})
+
+    async def get_saved_address(self, coin: str = ''):
+        """ https://docs.ftx.com/#get-saved-addresses """
+        return await self.get('/api/wallet/saved_addresses', coin=coin)
+
+    async def delete_saved_address(self, saved_address_id: int = ''):
+        """ https://docs.ftx.com/#delete-saved-addresses """
+        return await self.get(f'/api/wallet/saved_addresses/{saved_address_id}')
