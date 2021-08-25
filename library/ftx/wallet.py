@@ -1,9 +1,9 @@
 import datetime as dt
 
-from library.ftx.base import ApiObject
+from library.ftx.base import BaseApiClass
 
 
-class Wallet(ApiObject):
+class Wallet(BaseApiClass):
     """https://docs.ftx.com/#account"""
 
     def __init__(self, api_key: str, secret_key: str, subaccount_name: str = ''):
