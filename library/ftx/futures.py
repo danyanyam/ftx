@@ -2,8 +2,6 @@ import datetime as dt
 
 from library.ftx.base import ApiObject
 
-# TODO: historical index
-
 
 class Futures(ApiObject):
     def __init__(self, api_key: str, secret_key: str, subaccount_name: str = ''):
@@ -32,3 +30,8 @@ class Futures(ApiObject):
     async def get_expired_futures(self):
         """ https://docs.ftx.com/#get-index-weights """
         return await self.get(f'/api/expired_futures', authentication_required=False)
+
+    async def get_historical_index(self, market_name: str, resolution: int, start_time: dt.datetime, end_time: dt.datetime):
+        """ https://docs.ftx.com/#get-historical-index """
+        start_ts, end_ts = start_time.timestamp(), end_time.timestamp()
+        return await self.get(f'/api/indexes/{market_name}/candles?resolution={resolution}&start_time={start_ts}&end_time={end_ts}')

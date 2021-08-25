@@ -20,24 +20,26 @@ class ApiObject:
         self.secret_key = secret_key
         self.subaccount_name = subaccount_name
 
-    async def get(self, endpoint: str, authentication_required: bool = True, start_time: dt.datetime = None, end_time: dt.datetime = None):
+    async def get(self, endpoint: str, authentication_required: bool = True, start_time: dt.datetime = None, end_time: dt.datetime = None, **kwargs):
         """ Basic get request """
         assert both_args_present_or_not(start_time, end_time), f'choose either both start_time & end_time, or nothing'
 
         # pagination support
         params = {'start_time': start_time, 'end_time': end_time} if all([start_time, end_time]) else {}
+        params.update(kwargs)
         headers = await self._build_header(method='GET', endpoint=endpoint) if authentication_required else None
 
         async with aiohttp.ClientSession(headers=headers) as request:
             async with request.get(API + endpoint, params=params) as response:
                 return await response.json()
 
-    async def post(self, endpoint: str, data: Dict[str, str], authentication_required: bool = True, start_time: dt.datetime = None, end_time: dt.datetime = None):
+    async def post(self, endpoint: str, data: Dict[str, str], authentication_required: bool = True, start_time: dt.datetime = None, end_time: dt.datetime = None, **kwargs):
         """ Basic post request """
         assert both_args_present_or_not(start_time, end_time), f'choose either both start_time & end_time, or nothing'
 
         # pagination support
         params = {'start_time': start_time, 'end_time': end_time} if all([start_time, end_time]) else {}
+        params.update(kwargs)
         headers = await self._build_header(method='POST', endpoint=endpoint, data=data) if authentication_required else None
 
         async with aiohttp.ClientSession(headers=headers) as request:
@@ -45,6 +47,8 @@ class ApiObject:
                 return await response.json()
 
     async def delete(self, endpoint: str, data: Dict[str, str], authentication_required: bool = True):
+        """ Basic delete request """
+
         headers = await self._build_header(method='DELETE', endpoint=endpoint, data=data) if authentication_required else None
         async with aiohttp.ClientSession(headers=headers) as request:
             async with request.delete(API + endpoint, data=data) as response:

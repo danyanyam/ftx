@@ -1,8 +1,6 @@
 import datetime as dt
 from library.ftx.base import ApiObject
 
-# TODO: get historical prices
-
 
 class Markets(ApiObject):
     def __init__(self, api_key: str, secret_key: str, subaccount_name: str = ''):
@@ -23,3 +21,8 @@ class Markets(ApiObject):
     async def get_trades(self, market_name: str, start_time: dt.datetime = None, end_time: dt.datetime = None):
         """ https://docs.ftx.com/#get-trades """
         return await self.get(f'/api/markets/{market_name}/trades', authentication_required=False, start_time=start_time, end_time=end_time)
+
+    async def get_historical_prices(self, market_name: str, resolution: int, start_time: dt.datetime, end_time: dt.datetime):
+        """ https://docs.ftx.com/#get-historical-index """
+        start_ts, end_ts = start_time.timestamp(), end_time.timestamp()
+        return await self.get(f'/api/markets/{market_name}/candles?resolution={resolution}&start_time={start_ts}&end_time={end_ts}')
