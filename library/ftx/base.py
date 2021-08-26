@@ -27,10 +27,11 @@ def both_args_present_or_not(lhs=None, rhs=None):
 
 
 class BaseApiClass:
-    def __init__(self, api_key: str, secret_key: str, subaccount_name: str):
+    def __init__(self, api_key: str, secret_key: str, subaccount_name: str, api=API):
         self.api_key = api_key
         self.secret_key = secret_key
         self.subaccount_name = subaccount_name
+        self.api = api
 
     async def get(self, endpoint: str, authentication_required: bool = True, start_time: dt.datetime = None, end_time: dt.datetime = None, **kwargs):
         """ Basic get request """
@@ -44,7 +45,7 @@ class BaseApiClass:
         headers = await self._build_header(method='GET', endpoint=endpoint) if authentication_required else None
 
         async with aiohttp.ClientSession(headers=headers) as request:
-            async with request.get(API + endpoint) as response:
+            async with request.get(self.api + endpoint) as response:
                 return await response.json()
 
     async def post(self, endpoint: str, data: Dict[str, str], authentication_required: bool = True, start_time: dt.datetime = None, end_time: dt.datetime = None, **kwargs):
@@ -58,7 +59,7 @@ class BaseApiClass:
         headers = await self._build_header(method='POST', endpoint=endpoint, data=data) if authentication_required else None
 
         async with aiohttp.ClientSession(headers=headers) as request:
-            async with request.post(API + endpoint, data=data, params=params) as response:
+            async with request.post(self.api + endpoint, data=data, params=params) as response:
                 return await response.json()
 
     async def delete(self, endpoint: str, data: Dict[str, str], authentication_required: bool = True):
@@ -67,7 +68,7 @@ class BaseApiClass:
         data = delete_keys_with_empty_values(data)
         headers = await self._build_header(method='DELETE', endpoint=endpoint, data=data) if authentication_required else None
         async with aiohttp.ClientSession(headers=headers) as request:
-            async with request.delete(API + endpoint, data=data) as response:
+            async with request.delete(self.api + endpoint, data=data) as response:
                 return await response.json()
 
     async def _build_header(self, method: str, endpoint: str, data: Dict[str, str] = None):
