@@ -26,13 +26,13 @@ class DataListener:
             # Authenticating in websocket server
             await client.send(self._prepare_authentication())
             # Subscribing for channels
-            await self._execute_orders(client)
+            await self._execute_orders_from_queue(client)
 
             while len(self.subscriptions) > 0:
                 yield json.loads(await client.recv())
 
                 # Unsubscribing from channels, if needed
-                await self._execute_orders(client)
+                await self._execute_orders_from_queue(client)
 
     async def subscribe(self, channel: str, market: str) -> None:
         """ Subscribes to real-time data stream """
@@ -50,7 +50,7 @@ class DataListener:
             await self._orders.put(self._to_ws_format(op='unsubscribe', channel=channel, market=market))
             print(f'Unsubscribed from {market} - {channel}')
 
-    async def _execute_orders(self, client):
+    async def _execute_orders_from_queue(self, client):
         """ execute orders if the appear in queue  """
         if self._orders.qsize() > 0:
             await client.send(await self._orders.get())
