@@ -7,7 +7,7 @@ __pycache__/
 *.so
 
 # API keys
-library/config/binance
+library/binance/config.py
 
 # Distribution / packaging
 .Python

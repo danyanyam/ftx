@@ -5,18 +5,20 @@ import json
 import hashlib
 import hmac
 import time
+from config import apikey, secret
+
 
 servertime = requests.get("https://api.binance.com/api/v1/time")
 servertimeobject = json.loads(servertime.text)
 servertimeint = servertimeobject['serverTime']
 
 params = urlencode({
-    "signature" : hashedsig,
-    "timestamp" : servertimeint,
-    "type" : "SPOT"
+    "signature": hashedsig,
+    "timestamp": servertimeint,
+    "type": "SPOT"
 })
 headers = {
-    "X-MBX-APIKEY" : apikey,
+    "X-MBX-APIKEY": apikey,
 }
 
 hashedsig = hmac.new(secret.encode(), params.encode(), hashlib.sha256).hexdigest()
