@@ -1,12 +1,25 @@
-import datetime as dt
-import aiohttp
-import time
+import requests
 import hmac
+import hashlib
 import json
-from typing import Dict
-import urllib
+from config import api_key, secret_key
+from urllib.parse import urlencode
 
 API = 'https://api.binance.com'
+
+# TO DO: Security Type refactoring
+
+
+def server_time():
+    """Make a request to the API to get server time
+
+    Returns:
+        server_time: int
+    """
+    servertime = requests.get("https://api.binance.com/api/v1/time")
+    servertimeobject = json.loads(servertime.text)
+    server_time = servertimeobject['serverTime']
+    return server_time
 
 
 class BaseApiClass:
@@ -15,21 +28,49 @@ class BaseApiClass:
         self.secret_key = secret_key
         self.api = api
 
-    def get(self, endpoint: str, headers = {}):
-        with aiohttp.ClientSession(headers=headers) as request:
-            with request.get(self.api + endpoint) as response:
-                return response.json()
-    # async def get(self, endpoint: str, authentication_required: bool = True, start_time: dt.datetime = None, end_time: dt.datetime = None, **kwargs):
-    #     """ Basic get request """
-    #     assert both_args_present_or_not(start_time, end_time), f'choose either both start_time & end_time, or nothing'
+    def _build_params(self, sign: bool, time_req: bool, params):
+        params = {k: v for k, v in params.items() if v is not None}
+        params.update({'timestamp': server_time()}) if time_req else None
 
-    #     # pagination support
-    #     params = {'start_time': start_time, 'end_time': end_time} if all([start_time, end_time]) else {}
-    #     params.update(delete_keys_with_empty_values(kwargs))
+        params_sign = params
+        if sign:
+            params_sign = urlencode(params_sign)
+            signature = hmac.new(self.secret_key.encode(), params_sign.encode(), hashlib.sha256).hexdigest()
+            params.update({'signature': signature})
 
-    #     endpoint = create_endpoint_from_arguments(endpoint, params)
-    #     headers =  self._build_header(method='GET', endpoint=endpoint) if authentication_required else None
+        return params
 
-    #     with aiohttp.ClientSession(headers=headers) as request:
-    #         with request.get(self.api + endpoint) as response:
-    #             return response.json()
+    def _build_headers(self):
+        headers = {"X-MBX-APIKEY": api_key}
+        return headers
+
+    def get(self,
+            endpoint: str,
+            headers: bool = False,
+            sign: bool = False,
+            time_req: bool = False,
+            authentication_required: bool = True,
+            **kwargs):
+
+        params = self._build_params(sign, time_req, params=kwargs)
+        headers = self._build_headers() if authentication_required else None
+
+        r = requests.get(self.api + endpoint, headers=headers, params=params)
+        response = json.loads(r.text)
+        print(json.dumps(response, indent=4, sort_keys=True))
+
+    def post(self,
+             endpoint: str,
+             headers: bool = False,
+             sign: bool = False,
+             time_req: bool = False,
+             authentication_required: bool = True,
+             **kwargs):
+
+        params = self._build_params(sign, time_req, params=kwargs)
+        headers = self._build_headers() if authentication_required else None
+
+        r = requests.post(self.api + endpoint, headers=headers, params=params)
+        print(r)
+        response = json.loads(r.text)
+        print(json.dumps(response, indent=4, sort_keys=True))
