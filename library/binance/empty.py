@@ -1,5 +1,7 @@
-from config import api_key, secret_key
-from account import Wallet
+from config import api_key, secret
+from wallet import Wallet
+import asyncio
+from pprint import pprint
 
-wallet = Wallet(api_key, secret_key)
-wallet.enable_fast_withdraw_switch()
+wallet = Wallet(api_key, secret)
+pprint(asyncio.run(wallet.api_key_permission()))

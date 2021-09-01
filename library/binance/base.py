@@ -2,7 +2,7 @@ import requests
 import hmac
 import hashlib
 import json
-from config import api_key, secret_key
+import aiohttp
 from urllib.parse import urlencode
 
 API = 'https://api.binance.com'
@@ -41,36 +41,33 @@ class BaseApiClass:
         return params
 
     def _build_headers(self):
-        headers = {"X-MBX-APIKEY": api_key}
+        headers = {"X-MBX-APIKEY": self.api_key}
         return headers
 
-    def get(self,
-            endpoint: str,
-            headers: bool = False,
-            sign: bool = False,
-            time_req: bool = False,
-            authentication_required: bool = True,
-            **kwargs):
+    async def get(self,
+                  endpoint: str,
+                  sign: bool = False,
+                  time_req: bool = False,
+                  authentication_required: bool = True,
+                  **kwargs):
 
         params = self._build_params(sign, time_req, params=kwargs)
         headers = self._build_headers() if authentication_required else None
 
-        r = requests.get(self.api + endpoint, headers=headers, params=params)
-        response = json.loads(r.text)
-        print(json.dumps(response, indent=4, sort_keys=True))
+        async with aiohttp.ClientSession(headers=headers) as request:
+            async with request.get(self.api + endpoint, params=params, ssl=False) as response:
+                return await response.json()
 
-    def post(self,
-             endpoint: str,
-             headers: bool = False,
-             sign: bool = False,
-             time_req: bool = False,
-             authentication_required: bool = True,
-             **kwargs):
+    async def post(self,
+                   endpoint: str,
+                   sign: bool = False,
+                   time_req: bool = False,
+                   authentication_required: bool = True,
+                   **kwargs):
 
         params = self._build_params(sign, time_req, params=kwargs)
         headers = self._build_headers() if authentication_required else None
 
-        r = requests.post(self.api + endpoint, headers=headers, params=params)
-        print(r)
-        response = json.loads(r.text)
-        print(json.dumps(response, indent=4, sort_keys=True))
+        async with aiohttp.ClientSession(headers=headers) as request:
+            async with request.post(self.api + endpoint, params=params, ssl=False) as response:
+                return await response.json()
