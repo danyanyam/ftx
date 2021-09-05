@@ -71,3 +71,17 @@ class BaseApiClass:
         async with aiohttp.ClientSession(headers=headers) as request:
             async with request.post(self.api + endpoint, params=params, ssl=False) as response:
                 return await response.json()
+
+    async def delete(self,
+                     endpoint: str,
+                     sign: bool = False,
+                     time_req: bool = False,
+                     authentication_required: bool = True,
+                     **kwargs):
+
+        params = self._build_params(sign, time_req, params=kwargs)
+        headers = self._build_headers() if authentication_required else None
+
+        async with aiohttp.ClientSession(headers=headers) as request:
+            async with request.post(self.api + endpoint, params=params, ssl=False) as response:
+                return await response.json()

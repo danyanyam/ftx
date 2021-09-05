@@ -1,3 +1,4 @@
+from os import symlink
 from base import BaseApiClass
 import datetime as dt
 
@@ -15,7 +16,8 @@ class Market(BaseApiClass):
     # TODO: Complete the function
     def exchange_information(self):
         """https://binance-docs.github.io/apidocs/spot/en/#exchange-information"""
-        pass
+        # pass
+        return self.get('/api/v3/exchangeInfo', symbol='BTCUSDT')
 
     def order_book(self,
                    symbol: str = 'BTCUSDT',
