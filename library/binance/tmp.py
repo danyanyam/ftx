@@ -1,20 +1,28 @@
 from enum import Enum
 
 
-class Interval(Enum):
+class Possible_Value(Enum):
     ONE_MINUTE = '1m'
+    ONE_SECOND = '1sec'
 
 
-def check(interval):
+def some_funny_finction(arg):
 
-    if not isinstance(interval, Interval):
-        raise TypeError(f'Bad interval value: {interval}')
+    assert arg in [n.value for n in Possible_Value], f'{arg} is not OK!'
+    print(f'{arg} is OK!')
 
 
-def pass_agruments(a: str = None,
-                   b: str = None,
-                   c: str = None,
-                   d: str = None):
-    return
-# assert interval in ['1m', '3m', '5m', '15m', '30m', '1h', '2h',
-#                             '4h', '6h', '8h', '12h', '1d', '3d', '1w', '1M']
+some_funny_finction('1m')
+some_funny_finction(Possible_Value.ONE_MINUTE)
+
+
+def some_nice_function(arg):
+
+    if not isinstance(arg, Possible_Value):
+        raise TypeError(f'{arg} is not OK!')
+
+    print(f'{arg.value} is OK!')
+
+
+some_nice_function(Possible_Value.ONE_MINUTE)
+some_nice_function('1m')

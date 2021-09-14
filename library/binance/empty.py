@@ -15,5 +15,7 @@ spot = Spot(api_key, secret)
 margin = Margin(api_key, secret)
 savings = Savings(api_key, secret)
 
-pprint(asyncio.run(savings.get_fixed_and_activity_product_list(asset="USDT")))
+# pprint(asyncio.run(savings.get_fixed_and_activity_product_list(asset="USDT")))
 # pprint(asyncio.run(savings.account_information()))
+pprint(asyncio.run(margin.enable_isolated_margin_account(symbol='BTCUSDT')))
+pprint(asyncio.run(margin.disable_isolated_margin_account(symbol='BTCUSDT')))
