@@ -9,24 +9,24 @@ class Wallet(BaseApiClass):
     def __init__(self, api_key: str, secret_key: str, subaccount_name: str = ''):
         super().__init__(api_key, secret_key, subaccount_name)
 
-    async def get_coins(self):
+    def get_coins(self):
         """ https://docs.ftx.com/#get-coins """
-        return await self.get('/api/wallet/coins')
+        return self.get('/api/wallet/coins')
 
-    async def get_balances(self):
+    def get_balances(self):
         """ https://docs.ftx.com/#get-balances """
-        return await self.get('/api/wallet/balances')
+        return self.get('/api/wallet/balances')
 
-    async def get_balances_of_all_accounts(self):
+    def get_balances_of_all_accounts(self):
         """
         https://docs.ftx.com/#get-balances-of-all-accounts
 
         The response will contain an object whose keys are the subaccount names.
         The main account will appear under the key main.
         """
-        return await self.get('/api/wallet/all_balances')
+        return self.get('/api/wallet/all_balances')
 
-    async def get_deposit_address(self, coin: str, method: str):
+    def get_deposit_address(self, coin: str, method: str):
         """
         https://docs.ftx.com/#get-deposit-address
 
@@ -36,17 +36,17 @@ class Wallet(BaseApiClass):
         For Omni tokens     : method=omni
         For BEP2 tokens     : method=bep2
         """
-        return await self.get(f'/api/wallet/deposit_address/{coin}?method={method}')
+        return self.get(f'/api/wallet/deposit_address/{coin}?method={method}')
 
-    async def get_deposit_history(self, start_time: dt.datetime = None, end_time: dt.datetime = None):
+    def get_deposit_history(self, start_time: dt.datetime = None, end_time: dt.datetime = None):
         """ https://docs.ftx.com/#get-deposit-history """
-        return await self.get('/api/wallet/deposits', start_time=start_time, end_time=end_time)
+        return self.get('/api/wallet/deposits', start_time=start_time, end_time=end_time)
 
-    async def get_withdrawal_history(self, start_time: dt.datetime = None, end_time: dt.datetime = None):
+    def get_withdrawal_history(self, start_time: dt.datetime = None, end_time: dt.datetime = None):
         """ https://docs.ftx.com/#get-withdrawal-history """
-        return await self.get('/api/wallet/withdrawals', start_time=start_time, end_time=end_time)
+        return self.get('/api/wallet/withdrawals', start_time=start_time, end_time=end_time)
 
-    async def request_withdrawal(self, coin: str, size: float, address: str, tag: str = None, method: str = None, password: str = None, code: str = None):
+    def request_withdrawal(self, coin: str, size: float, address: str, tag: str = None, method: str = None, password: str = None, code: str = None):
         """
         https://docs.ftx.com/#request-withdrawal
 
@@ -63,14 +63,14 @@ class Wallet(BaseApiClass):
         Returns:
             Dict[str, Any]: result
         """
-        return await self.post('/api/wallet/withdrawals', data={'coin': coin, 'size': size, 'address': address, 'tag': tag, 'method': method, 'password': password, 'code': code})
+        return self.post('/api/wallet/withdrawals', data={'coin': coin, 'size': size, 'address': address, 'tag': tag, 'method': method, 'password': password, 'code': code})
 
-    async def get_airdrops(self, start_time: dt.datetime = None, end_time: dt.datetime = None):
+    def get_airdrops(self, start_time: dt.datetime = None, end_time: dt.datetime = None):
         """https://docs.ftx.com/#get-airdrops
         This endpoint provides you with updates to your AMPL balances based on AMPL rebases.  """
-        return await self.get('/api/wallet/airdrops', start_time=start_time, end_time=end_time)
+        return self.get('/api/wallet/airdrops', start_time=start_time, end_time=end_time)
 
-    async def get_withdrawal_fees(self, coin: str, size: float, address: str, tag: str = None):
+    def get_withdrawal_fees(self, coin: str, size: float, address: str, tag: str = None):
         """
         https://docs.ftx.com/#get-withdrawal-fees
 
@@ -83,16 +83,16 @@ class Wallet(BaseApiClass):
         Returns:
             Dict[str, Any]: server response
         """
-        return await self.post('/api/wallet/withdrawal_fee', data={'coin': coin, 'size': size, 'address': address, 'tag': tag})
+        return self.post('/api/wallet/withdrawal_fee', data={'coin': coin, 'size': size, 'address': address, 'tag': tag})
 
-    async def get_saved_addresses(self, coin: str = None):
+    def get_saved_addresses(self, coin: str = None):
         """
         https://docs.ftx.com/#get-saved-addresses
         This endpoint provides you with your saved addresses.
         """
-        return await self.get('/api/wallet/saved_addresses')
+        return self.get('/api/wallet/saved_addresses')
 
-    async def create_saved_addresses(self, coin: str, address: str, addressName: str, isPrimeTrust: bool, tag: str = None):
+    def create_saved_addresses(self, coin: str, address: str, addressName: str, isPrimeTrust: bool, tag: str = None):
         """
         https://docs.ftx.com/#create-saved-addresses
 
@@ -106,12 +106,12 @@ class Wallet(BaseApiClass):
         Returns:
             Dict[str, Any]: [description]
         """
-        return await self.post('/api/wallet/saved_addresses', data={'coin': coin, 'addressName': addressName, 'address': address, 'isPrimeTrust': isPrimeTrust, 'tag': tag})
+        return self.post('/api/wallet/saved_addresses', data={'coin': coin, 'addressName': addressName, 'address': address, 'isPrimeTrust': isPrimeTrust, 'tag': tag})
 
-    async def get_saved_address(self, coin: str = ''):
+    def get_saved_address(self, coin: str = ''):
         """ https://docs.ftx.com/#get-saved-addresses """
-        return await self.get('/api/wallet/saved_addresses', coin=coin)
+        return self.get('/api/wallet/saved_addresses', coin=coin)
 
-    async def delete_saved_address(self, saved_address_id: int = ''):
+    def delete_saved_address(self, saved_address_id: int = ''):
         """ https://docs.ftx.com/#delete-saved-addresses """
-        return await self.get(f'/api/wallet/saved_addresses/{saved_address_id}')
+        return self.get(f'/api/wallet/saved_addresses/{saved_address_id}')
