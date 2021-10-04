@@ -2,9 +2,12 @@
 __pycache__/
 *.py[cod]
 *$py.class
-
+.venv/
 # C extensions
 *.so
+
+# API keys
+library/binance/config.py
 
 # Distribution / packaging
 .Python
