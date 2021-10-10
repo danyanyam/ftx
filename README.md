@@ -2,6 +2,79 @@
 
 async ftx api model from korgi team
 
+
+## Backtester example
+
+```python
+import queue
+import datetime as dt
+
+
+from library.backtester.portfolio import NaivePortfolio
+from library.backtester.strategy import BuyAndHoldStrategy
+from library.backtester.execution import SimulatedExecutionHandler
+from library.backtester.data import FtxHistoricCSVDataHandler
+from library.backtester.enums import EventTypes
+
+
+def main(bars: FtxHistoricCSVDataHandler, strategy: BuyAndHoldStrategy,
+         portfolio: NaivePortfolio, broker: SimulatedExecutionHandler):
+
+    while True:
+        print('outer loop')
+        # Update the bars (specific backtest code, as opposed to live trading)
+        if bars.continue_backtest == True:
+            bars.update_bars()
+        else:
+            break
+
+        # Handle the events
+        while True:
+            print('inner loop')
+            try:
+                event = events.get(False)
+
+                if event is not None:
+                    if event.type == EventTypes.MARKET:
+                        strategy.calculate_signals(event)
+                        portfolio.update_timeindex(event)
+
+                    elif event.type == EventTypes.SIGNAL:
+                        portfolio.update_signal(event)
+
+                    elif event.type == EventTypes.ORDER:
+                        broker.execute_order(event)
+
+                    elif event.type == EventTypes.FILL:
+                        portfolio.update_fill(event)
+
+            except queue.Empty:
+                break
+
+    curve = portfolio.create_equity_curve_dataframe()
+    plot = curve['total'].plot()
+    fig = plot.get_figure()
+    fig.savefig("output.png")
+
+
+if __name__ == "__main__":
+    # Declare the components with respective parameters
+    events = queue.Queue()
+    symbol_list = ['BTCUSDT', 'ETHUSDT', 'ABNBUSD']
+    now = dt.datetime(2020, 3, 28)
+    initial_capital = 1_000_000
+
+    # In the data folder there are should be csv files
+    # 'BTCUSDT.csv', 'ETHUSDT.csv', 'ABNBUSD.csv'
+    bars = FtxHistoricCSVDataHandler(events, 'data/', symbol_list)
+    strategy = BuyAndHoldStrategy(bars, events)
+    portfolio = NaivePortfolio(bars, events, now, initial_capital)
+    broker = SimulatedExecutionHandler(events)
+
+    main(bars, strategy, portfolio, broker)
+
+```
+
 ## Async examples:
 
 ```python
