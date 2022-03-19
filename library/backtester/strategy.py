@@ -27,6 +27,46 @@ class Strategy(ABC):
         return NotImplementedError('Should implement calculate_signals()')
 
 
+class BuyOnImpetus(Strategy):
+
+    def __init__(self, bars: DataHandler, events: EventTypes) -> None:
+        self.bars = bars
+        self.events = events
+        self.symbol_list = bars.symbol_list
+
+        # Once buy & hold signal is given, these are set to True
+        self.bought = self._calculate_initial_bought()
+
+    def _calculate_initial_bought(self) -> Dict[str, bool]:
+        """
+        Adds keys to the bought dictionary for all symbols and sets them
+        to False.
+        """
+        return {symbol: False for symbol in self.symbol_list}
+
+    def calculate_signals(self, event: EventTypes) -> None:
+        """
+        For "Buy and Hold" we generate a single signal per symbol and then no
+        additional signals. This means we are constantly long the market from
+        the date of strategy initialisation.
+
+        Parameters
+        event - A MarketEvent object.
+        """
+        if not event.type == EventTypes.MARKET:
+            return
+
+        for symbol in self.symbol_list:
+            bars = self.bars.get_latest_bars(symbol, n=5)
+
+            # Dont make decisions before getting all of the data
+            if len(bars) != 5:
+                return
+
+            bars = sorted(bars, key=lambda x: x.dt)
+            returns = [bar.close for bar in bars]
+
+
 class BuyAndHoldStrategy(Strategy):
     """
     This is an extremely simple strategy that goes LONG all of the

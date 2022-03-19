@@ -24,7 +24,7 @@ class DataListener:
         # for retreiving universe of possible assets
         self._markets = Markets(api_key, api_secret)
 
-    @logger.catch
+    # @logger.catch
     async def listen(self):
         """ Listens to subscribed data streams """
 

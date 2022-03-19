@@ -94,7 +94,6 @@ class FtxHistoricCSVDataHandler(DataHandler):
         for symbol in self.symbol_list:
 
             path = os.path.join(self.csv_dir, symbol + '.csv')
-
             if not os.path.exists(path):
                 continue
 
@@ -115,8 +114,6 @@ class FtxHistoricCSVDataHandler(DataHandler):
             self.symbol_data[symbol] = bars_list
             self.latest_symbol_data[symbol] = bars_list.copy()
 
-        # self.symbol_data[symbol] = ...
-
     def _init_iterators(self):
         iterators = {}
         for symbol in self.symbol_list:
@@ -129,10 +126,8 @@ class FtxHistoricCSVDataHandler(DataHandler):
         (sybmbol, datetime, open, low, high, close, volume).
         """
 
-
         for bar in self.symbol_data[symbol]:
             yield bar
-
 
     def get_latest_bars(self, symbol: str, n=1) -> List[Bar]:
         """
@@ -154,16 +149,12 @@ class FtxHistoricCSVDataHandler(DataHandler):
 
         for symbol in self.symbol_list:
             try:
-
                 bar = next(self.iterators[symbol])
-                print(bar)
 
             except StopIteration:
                 self.continue_backtest = False
 
-
             if bar is not None:
-
                 self.latest_symbol_data[symbol].append(bar)
 
         self.events.put(MarketEvent())
